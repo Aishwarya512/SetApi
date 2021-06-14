@@ -78,9 +78,9 @@ func (hash *Set) RemoveItem(w http.ResponseWriter, r *http.Request) {
 	// if LinkedList is empty
 	if head == nil {
 		log.Println("Item to be deleted is not present - ", number_str)
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status" : "OK", "message" : "Item to be deleted is not present."}`))
+		w.Write([]byte(`{"status" : "Bad Request", "message" : "Item to be deleted is not present."}`))
 		return
 	}
 	// if item is present at the beginning of the LinkedList, no need to check the rest
@@ -130,9 +130,9 @@ func (hash *Set) HasItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Println("Item not present - ", number_str)
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusBadRequest)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(`{"status" : "OK", "message" : "Item is not present."}`))
+	w.Write([]byte(`{"status" : "Bad Request", "message" : "Item is not present."}`))
 }
 
 // Function CheckItem is called in AddItem and HasItem

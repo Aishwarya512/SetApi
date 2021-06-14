@@ -10,6 +10,62 @@ Create a REST API to implement set functionalities – addItem(), removeItem() a
 4. Implemented without using built-in hashmaps or sets
 5. Made addItem() operation 2x as fast
 
+# REST API documentation
+
+### GET /addItem/{number}
+    Responses:
+    200 OK 
+        {
+            "status": "OK",
+            "message": "Item added."
+        }
+    400 Bad Request 
+        { 
+            "status": "Bad Request",
+            "message": "Item already exists."
+        }
+        OR 
+        {
+            "status" : "Bad Request",
+            "message" : "Item has to be a number."
+        }
+
+### GET /removeItem/{number}
+    Responses:
+    200 OK 
+        {
+            "status": "OK",
+            "message": "Item deleted."
+        }
+    400 Bad Request 
+        { 
+            "status": "Bad Request",
+            "message": "Item to be deleted is not present."
+        }
+        OR 
+        {
+            "status" : "Bad Request",
+            "message" : "Item has to be a number."
+        }
+
+### GET /hasItem/{number}
+    Responses:
+    200 OK 
+        {
+            "status": "OK",
+            "message": "Item is present."
+        }
+    400 Bad Request 
+        { 
+            "status": "Bad Request",
+            "message": "Item is not present."
+        }
+        OR 
+        {
+            "status" : "Bad Request",
+            "message" : "Item has to be a number."
+        }
+
 # Repo structure
 
 ## cloudformation

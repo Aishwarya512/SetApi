@@ -1,0 +1,80 @@
+Parameters:
+  CodeBucket:
+    Description: Code stored in S3
+    Type: String
+    Default: setapi-code
+  KeyName:
+    Description: Key-pair name
+    Type: String
+Resources:
+  SetApiSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+        GroupDescription: Allow http to client host 
+        SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIpv6: ::/0
+  SetApiService:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0b2ca94b5b49e0132 
+      KeyName: !Ref KeyName
+      UserData: !Base64
+        Fn::Sub: |
+          #!/bin/bash
+          - sudo yum -y update
+          - sudo yum install -y golang
+          - echo "export GOROOT=/usr/lib/golang" >> ~/.bash_profile
+          - echo "export GOPATH=$HOME/go-projects" >> ~/.bash_profile
+          - echo "export PATH=$GOPATH/bin:$GOROOT/bin:$PATH" >> ~/.bash_profile
+          - cd ~
+          - mkdir go-projects
+          - cd go-projects 
+          - mkdir SetApi
+          - aws s3 cp s3://${CodeBucket}/main.zip /home/ec2-user/go-projects/SetApi
+          - cd ~/go-projects/SetApi
+          - unzip main.zip
+          - nohup go run main &
+      SecurityGroups:
+        - !Ref SetApiSecurityGroup
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles: [!Ref IAMRole]
+  IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: [ec2.amazonaws.com]
+          Action: ['sts:AssumeRole']
+      Path: /
+      Policies:
+      - PolicyName: set-api-s3-access
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+            - s3:GetObject
+            - s3:ListBucket
+            Resource: !Sub "arn:aws:s3:::${CodeBucket}/*"
+Outputs:
+  PublicIp:
+    Description: SetApiService Public IP
+    Value: !GetAtt SetApiService.PublicIp
+
+

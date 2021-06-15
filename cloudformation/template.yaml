@@ -24,6 +24,15 @@ Resources:
           FromPort: 3000
           ToPort: 3000
           CidrIpv6: ::/0
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIpv6: ::/0
+
   SetApiService:
     Type: AWS::EC2::Instance
     Properties:

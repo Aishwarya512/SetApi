@@ -89,3 +89,11 @@ This service uses third party router Gorilla Mux - https://github.com/gorilla/mu
 
 Contains code for making the go REST API addItem() operation 2x faster
 
+### main_test.go
+
+Contains unit tests
+
+### gatling
+
+Contains gatling load tests scenarios
+
